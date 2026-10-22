@@ -66,17 +66,3 @@ CREATE TABLE stg_usuario (
     telefono   text,
     motivo      text
 );
-CREATE TABLE stg_cuenta (
-    documento_usuario   text,
-    contrasena          text,
-    tipo_usuario        text,
-    motivo              text
-);
-CREATE TABLE stg_prestamo (
-    libro_prestado      text,
-    documento_usuario   text,
-    fecha_inicio        text,
-    fecha_limite        text,
-    devolucion          text,
-    motivo              text
-); -- no coloque id porque es serial y se genera automáticamente
