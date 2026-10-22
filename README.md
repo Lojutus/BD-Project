@@ -1,10 +1,16 @@
-# Entorno Docker del curso — PostgreSQL + pgAdmin + Node.js
+# Entorno Docker del proyecto — PostgreSQL + pgAdmin + Node.js (Nota de los estudiantes )
 
-Un único `docker-compose.yml` para **todas las prácticas del semestre y el
-proyecto final**. No se clona ni se copia por práctica: se levanta una vez y
-se reutiliza, cambiando solo el contenido de tres carpetas. Pensado para que
-enseñar/aprender sea fácil, no para producción (credenciales de ejemplo,
-todo en `localhost`, sin TLS).
+Se tiene este repositorio para trabajar en el proyecto de la bibloteca, aqui se colocaran los scripts
+de las actividades propuestas, tablas e importaciones necesarias y documentacion del proyecto.
+Integrantes del grupo:
+
+Carlos Andrés Meneses Llanten - 2516714
+
+Luis Felipe Velasco Chilito - 2517245
+
+José David Hurtado Gómez - 2519500
+
+Juan Miguel Salcedo Garay - 2538076
 
 ## Qué trae
 
@@ -53,7 +59,7 @@ scripts de `postgres/init/` (si hay alguno) para crear el esquema inicial.
 - **PostgreSQL:** `localhost:5432`, usuario/clave `bibloteca`, base `bibloteca`.
 - **pgAdmin:** abre `http://localhost:5050` — el servidor "bibloteca -
   PostgreSQL" ya está precargado, solo pide la contraseña de Postgres
-  (`curso`) la primera vez y luego la recuerda.
+  (`bibloteca`) la primera vez y luego la recuerda.
 - **Node:** si `node/proyecto/` tiene un `package.json`, tu app queda
   disponible en `http://localhost:3000` (o el puerto que uses).
 
