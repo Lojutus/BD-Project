@@ -55,7 +55,10 @@ CREATE TABLE stg_libro (
     categoria               text,
     anio_publicacion        integer,
     ejemplares_disponibles  integer,
-    motivo                  text      -- NULL = la fila pasó la validación
+    motivo                  text,      -- NULL = la fila pasó la validación
+    linea_csv               integer,  -- número de línea del archivo
+    contenido               text,      -- la línea completa del archivo  
+    num_campos              integer   -- número de campos separados por coma
 );
 
 CREATE TABLE stg_usuario (
@@ -64,5 +67,17 @@ CREATE TABLE stg_usuario (
     apellidos  text,
     correo     text,
     telefono   text,
-    motivo      text
+    motivo      text,
+    linea_csv   integer,  -- número de línea del archivo
+    contenido   text,      -- la línea completa del archivo
+    num_campos  integer   -- número de campos separados por coma
+);
+
+CREATE TABLE rechazo_carga (
+    id        SERIAL PRIMARY KEY,
+    archivo   text      NOT NULL,
+    linea     integer   NOT NULL,
+    contenido text      NOT NULL,
+    motivo    text      NOT NULL,
+    fecha     timestamp NOT NULL DEFAULT now()
 );
