@@ -35,3 +35,48 @@ CREATE TABLE prestamo (
     CHECK (fecha_limite >= fecha_inicio)
 
 );
+
+-- ---------------------------------------------------------------
+-- Tablas de paso (staging): todo es texto y nada tiene restricciones,
+-- para que ninguna fila del archivo se pierda antes de revisarla.
+-- Cada carga las vacía y las vuelve a llenar.
+-- ---------------------------------------------------------------
+
+-- Una fila por línea del archivo, sin partir en columnas
+CREATE TABLE stg_linea (
+    n      integer  GENERATED ALWAYS AS IDENTITY,  -- número de línea del archivo
+    linea  text
+);
+
+CREATE TABLE stg_libro (
+    isbn                    text,
+    titulo                  text,
+    autor                   text,
+    categoria               text,
+    anio_publicacion        integer,
+    ejemplares_disponibles  integer,
+    motivo                  text      -- NULL = la fila pasó la validación
+);
+
+CREATE TABLE stg_usuario (
+    documento  text,
+    nombres    text,
+    apellidos  text,
+    correo     text,
+    telefono   text,
+    motivo      text
+);
+CREATE TABLE stg_cuenta (
+    documento_usuario   text,
+    contrasena          text,
+    tipo_usuario        text,
+    motivo              text
+);
+CREATE TABLE stg_prestamo (
+    libro_prestado      text,
+    documento_usuario   text,
+    fecha_inicio        text,
+    fecha_limite        text,
+    devolucion          text,
+    motivo              text
+); -- no coloque id porque es serial y se genera automáticamente
