@@ -53,8 +53,8 @@ CREATE TABLE stg_libro (
     titulo                  text,
     autor                   text,
     categoria               text,
-    anio_publicacion        integer,
-    ejemplares_disponibles  integer,
+    anio_publicacion        text,
+    ejemplares_disponibles  text,
     motivo                  text,      -- NULL = la fila pasó la validación
     linea_csv               integer,  -- número de línea del archivo
     contenido               text,      -- la línea completa del archivo  
