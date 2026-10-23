@@ -1,7 +1,7 @@
 # S14 — Carga de lectores desde CSV
 
-**Esquema:** `biblioteca` (definido en `postgres/init/Bibliotecav2.sql`)
-**Script:** `Carga-Lectores.sql`
+**Esquema:** `biblioteca` (definido en `postgres/init/biblioteca-v2.sql`)
+**Script:** `carga-lectores.sql`
 **CSV propio:** `lectores_propio.csv`
 **Integrante:** Carlos Andrés Meneses Llanten — 2516714
 
@@ -20,7 +20,7 @@ Decisiones de carga documentadas:
 ```bash
 docker compose exec -T postgres psql -U bibloteca -d bibloteca \
   -v ON_ERROR_STOP=1 -v archivo=/scripts/datos/lectores_semilla.csv \
-  -f /scripts/Carga-Lectores.sql
+  -f /scripts/carga-lectores.sql
 ```
 
 Resultado esperado: 20 cargadas, 0 rechazadas.
@@ -57,7 +57,7 @@ no traía ningún error.
 ```bash
 docker compose exec -T postgres psql -U bibloteca -d bibloteca \
   -v ON_ERROR_STOP=1 -v archivo=/scripts/datos/lectores_semilla_con_errores.csv \
-  -f /scripts/Carga-Lectores.sql
+  -f /scripts/carga-lectores.sql
 ```
 
 Resultado esperado: 0 cargadas, 6 rechazadas — una por cada tipo de error del archivo.
@@ -65,7 +65,7 @@ Resultado esperado: 0 cargadas, 6 rechazadas — una por cada tipo de error del 
 ```text
 CREATE EXTENSION
 SET
-psql:/scripts/Carga-Lectores.sql:9: NOTICE:  extension "pgcrypto" already exists, skipping
+psql:/scripts/carga-lectores.sql:9: NOTICE:  extension "pgcrypto" already exists, skipping
 BEGIN
 TRUNCATE TABLE
 COPY 7
@@ -108,14 +108,14 @@ Los seis tipos de error del archivo quedaron atrapados y registrados con su moti
 
 ```bash
 docker compose exec -T postgres psql -U bibloteca -d bibloteca \
-  -v ON_ERROR_STOP=1 -f /scripts/Carga-Lectores.sql
+  -v ON_ERROR_STOP=1 -f /scripts/carga-lectores.sql
 ```
 
 Resultado esperado: 5 cargadas, 3 rechazadas (los tres errores nuevos: Lp 1, Lp 2 y Lp 3
 de la tabla de criterios).
 
 ```text
-psql:/scripts/Carga-Lectores.sql:9: NOTICE:  extension "pgcrypto" already exists, skipping
+psql:/scripts/carga-lectores.sql:9: NOTICE:  extension "pgcrypto" already exists, skipping
 CREATE EXTENSION
 SET
 BEGIN
@@ -150,14 +150,14 @@ Se corre el mismo archivo propio una segunda vez.
 
 ```bash
 docker compose exec -T postgres psql -U bibloteca -d bibloteca \
-  -v ON_ERROR_STOP=1 -f /scripts/Carga-Lectores.sql
+  -v ON_ERROR_STOP=1 -f /scripts/carga-lectores.sql
 ```
 
 Resultado esperado: 0 cargadas, 8 rechazadas, las 5 que ya estaban dan "documento ya
 existe" y las 3 malas siguen cayendo por su propio motivo.
 
 ```text
-psql:/scripts/Carga-Lectores.sql:9: NOTICE:  extension "pgcrypto" already exists, skipping
+psql:/scripts/carga-lectores.sql:9: NOTICE:  extension "pgcrypto" already exists, skipping
 CREATE EXTENSION
 SET
 BEGIN
