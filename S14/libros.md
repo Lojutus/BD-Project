@@ -16,7 +16,7 @@ Decisiones de carga documentadas:
 ## 1. Carga del esquema BibliotecaV2
 
 ```bash
-docker compose exec postgres psql -U curso -d curso -f /scripts/bibliotecav2.sql
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/bibliotecav2.sql
 ```
 
 Resultado obtenido:
@@ -48,7 +48,7 @@ El esquema fue recreado limpiamente con todas sus tablas de producción, tablas 
 ## 2. Carga de datos semilla de libros (sin errores)
 
 ```bash
-docker compose exec postgres psql -U curso -d curso -f /scripts/S14-carga-libros.sql
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/S14-carga-libros.sql
 ```
 
 Resultado obtenido:
@@ -82,7 +82,7 @@ Las $32$ filas válidas entraron exitosamente a la tabla `libro` y la bitácora 
 ## 3. Carga de datos semilla de libros con errores
 
 ```bash
-docker compose exec postgres psql -U curso -d curso \
+docker compose exec postgres psql -U biblioteca -d biblioteca \
   -v archivo=/scripts/datos/libros_semilla_con_errores.csv \
   -f /scripts/S14-carga-libros.sql
 ```
@@ -158,7 +158,7 @@ isbn,titulo,autor,categoria,anio_publicacion,ejemplares_disponibles
 ### 4.2 Ejecución y resultado de la carga
 
 ```bash
-docker compose exec -T postgres psql -U curso -d curso \
+docker compose exec -T postgres psql -U biblioteca -d biblioteca \
   -v ON_ERROR_STOP=1 -v archivo=/scripts/datos/libros_propio.csv \
   -f /scripts/S14-carga-libros.sql
 ```
@@ -239,7 +239,7 @@ COMMIT
 Se ejecuta una segunda vez la carga del archivo `libros_propio.csv` para verificar que el sistema no duplique registros y que la carga sea idéntica en reejecuciones:
 
 ```bash
-docker compose exec -T postgres psql -U curso -d curso \
+docker compose exec -T postgres psql -U biblioteca -d biblioteca \
   -v ON_ERROR_STOP=1 -v archivo=/scripts/datos/libros_propio.csv \
   -f /scripts/S14-carga-libros.sql
 ```
@@ -303,7 +303,7 @@ DETAIL:  Failing row contains (9781234567890, Libro del Futuro, Autor, Ficción,
 Posterior a la ejecución secuencial de la semilla limpia, la semilla con errores, el archivo propio (`libros_propio.csv`) y la reejecución de control, se verifica el conteo consolidado de registros en la tabla principal `libro` y en la bitácora de rechazados `rechazo_carga`:
 
 ```bash
-docker compose exec -T postgres psql -U curso -d curso -c "
+docker compose exec -T postgres psql -U biblioteca -d biblioteca -c "
 SELECT 
   (SELECT COUNT(*) FROM libro) AS total_libros,
   (SELECT COUNT(*) FROM rechazo_carga) AS total_rechazos;
