@@ -79,7 +79,7 @@ docker compose up -d postgres pgadmin
 2. Si ya habías usado el entorno antes, borra los datos para que el init
    vuelva a correr: `docker compose down && rm -rf postgres/data/*`.
 3. `docker compose up -d postgres pgadmin` y trabaja desde pgAdmin, o por
-   línea de comandos: `docker compose exec postgres psql -U curso -d curso`.
+   línea de comandos: `docker compose exec postgres psql -U biblioteca -d biblioteca`.
 
 **Prácticas de API REST / proyecto final (Postgres + Node):**
 
@@ -96,7 +96,7 @@ docker compose up -d              # levantar todo en segundo plano
 docker compose ps                 # ver qué está corriendo
 docker compose logs -f node       # ver logs en vivo de un servicio (postgres | pgadmin | node)
 docker compose exec node sh       # abrir una terminal dentro del contenedor de Node
-docker compose exec postgres psql -U curso -d curso   # abrir psql
+docker compose exec postgres psql -U biblioteca -d biblioteca   # abrir psql
 docker compose restart node       # reiniciar Node (p. ej. después de crear package.json)
 docker compose down               # apagar todo (los datos NO se borran)
 ```
