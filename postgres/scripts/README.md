@@ -13,6 +13,6 @@ docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/mi_con
 O entrar a una sesión interactiva de `psql` y ejecutar el `\i` desde ahí:
 
 ```bash
-docker compose exec postgres psql -U curso -d curso
+docker compose exec postgres psql -U biblioteca -d biblioteca
 biblioteca=# \i /scripts/mi_consulta.sql
 ```
