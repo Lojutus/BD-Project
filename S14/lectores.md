@@ -18,7 +18,7 @@ Decisiones de carga documentadas:
 ## 1. Lectores semilla sin errores
 
 ```bash
-docker compose exec -T postgres psql -U bibloteca -d bibloteca \
+docker compose exec -T postgres psql -U biblioteca -d biblioteca \
   -v ON_ERROR_STOP=1 -v archivo=/scripts/datos/lectores_semilla.csv \
   -f /scripts/carga-lectores.sql
 ```
@@ -55,7 +55,7 @@ no traía ningún error.
 ## 2. Lectores semilla con errores
 
 ```bash
-docker compose exec -T postgres psql -U bibloteca -d bibloteca \
+docker compose exec -T postgres psql -U biblioteca -d biblioteca \
   -v ON_ERROR_STOP=1 -v archivo=/scripts/datos/lectores_semilla_con_errores.csv \
   -f /scripts/carga-lectores.sql
 ```
@@ -107,7 +107,7 @@ Los seis tipos de error del archivo quedaron atrapados y registrados con su moti
 ## 3. CSV propio (`lectores_propio.csv`)
 
 ```bash
-docker compose exec -T postgres psql -U bibloteca -d bibloteca \
+docker compose exec -T postgres psql -U biblioteca -d biblioteca \
   -v ON_ERROR_STOP=1 -f /scripts/carga-lectores.sql
 ```
 
@@ -149,7 +149,7 @@ El error de la línea 7 no lo detecta la base de datos, el `UNIQUE` del correo d
 Se corre el mismo archivo propio una segunda vez.
 
 ```bash
-docker compose exec -T postgres psql -U bibloteca -d bibloteca \
+docker compose exec -T postgres psql -U biblioteca -d biblioteca \
   -v ON_ERROR_STOP=1 -f /scripts/carga-lectores.sql
 ```
 

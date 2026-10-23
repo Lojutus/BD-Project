@@ -1,6 +1,6 @@
 # Entorno Docker del proyecto — PostgreSQL + pgAdmin + Node.js (Nota de los estudiantes )
 
-Se tiene este repositorio para trabajar en el proyecto de la bibloteca, aqui se colocaran los scripts
+Se tiene este repositorio para trabajar en el proyecto de la biblioteca, aqui se colocaran los scripts
 de las actividades propuestas, tablas e importaciones necesarias y documentacion del proyecto.
 Integrantes del grupo:
 
@@ -56,10 +56,10 @@ docker compose up -d
 Eso levanta los tres servicios. La primera vez, Postgres ejecuta los
 scripts de `postgres/init/` (si hay alguno) para crear el esquema inicial.
 
-- **PostgreSQL:** `localhost:5432`, usuario/clave `bibloteca`, base `bibloteca`.
-- **pgAdmin:** abre `http://localhost:5050` — el servidor "bibloteca -
+- **PostgreSQL:** `localhost:5432`, usuario/clave `biblioteca`, base `biblioteca`.
+- **pgAdmin:** abre `http://localhost:5050` — el servidor "biblioteca -
   PostgreSQL" ya está precargado, solo pide la contraseña de Postgres
-  (`bibloteca`) la primera vez y luego la recuerda.
+  (`biblioteca`) la primera vez y luego la recuerda.
 - **Node:** si `node/proyecto/` tiene un `package.json`, tu app queda
   disponible en `http://localhost:3000` (o el puerto que uses).
 

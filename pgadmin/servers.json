@@ -1,14 +1,14 @@
 {
   "Servers": {
     "1": {
-      "Name": "Bibloteca - PostgreSQL",
+      "Name": "biblioteca - PostgreSQL",
       "Group": "Servers",
       "Host": "postgres",
       "Port": 5432,
-      "MaintenanceDB": "bibloteca",
-      "Username": "bibloteca",
+      "MaintenanceDB": "biblioteca",
+      "Username": "biblioteca",
       "SSLMode": "prefer",
-      "Comment": "Contenedor 'postgres' del docker-compose del projecto. La primera vez pgAdmin pedirá la contraseña (por defecto: bibloteca) y luego la recuerda."
+      "Comment": "Contenedor 'postgres' del docker-compose del projecto. La primera vez pgAdmin pedirá la contraseña (por defecto: biblioteca) y luego la recuerda."
     }
   }
 }
