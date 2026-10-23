@@ -2,7 +2,7 @@
 \set ON_ERROR_STOP on
 \if :{?archivo}
 \else
-    \set archivo /scripts/datos/lectores_propio.csv
+    \set archivo /scripts/datos/lectores_semilla.csv
 \endif
 
 
