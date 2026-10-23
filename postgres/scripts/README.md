@@ -7,12 +7,12 @@ consultas de una práctica, un `ALTER TABLE`, o probar algo sin tocar el
 esquema inicial.
 
 ```bash
-docker compose exec postgres psql -U curso -d curso -f /scripts/mi_consulta.sql
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/mi_consulta.sql
 ```
 
 O entrar a una sesión interactiva de `psql` y ejecutar el `\i` desde ahí:
 
 ```bash
 docker compose exec postgres psql -U curso -d curso
-curso=# \i /scripts/mi_consulta.sql
+biblioteca=# \i /scripts/mi_consulta.sql
 ```
