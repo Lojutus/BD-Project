@@ -1,6 +1,6 @@
 
 \set ON_ERROR_STOP on
-\if :{?archivo}
+\if :{?archivo_lectores} 
 \else
     \set archivo /scripts/datos/lectores_semilla.csv
 \endif

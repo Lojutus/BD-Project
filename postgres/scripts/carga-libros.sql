@@ -10,7 +10,7 @@
 -- Todo corre en una transacción: si algo falla, no queda nada a medias.
 
 \set ON_ERROR_STOP on
-\if :{?archivo}
+\if :{?archivo_libros}
 \else
     \set archivo /scripts/datos/libros_semilla.csv
 \endif
