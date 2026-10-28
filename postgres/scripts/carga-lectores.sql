@@ -2,7 +2,7 @@
 \set ON_ERROR_STOP on
 \if :{?archivo_lectores} 
 \else
-    \set archivo /scripts/datos/lectores_semilla.csv
+    \set archivo_lectores /scripts/datos/lectores_semilla.csv
 \endif
 
 
@@ -15,7 +15,7 @@ BEGIN;
 TRUNCATE stg_cuenta, stg_linea RESTART IDENTITY;
 
 -- 1. Leer el archivo tal cual: una fila por línea
-COPY stg_linea (linea) FROM :'archivo' WITH (FORMAT text);
+COPY stg_linea (linea) FROM :'archivo_lectores' WITH (FORMAT text);
 DELETE FROM stg_linea WHERE n = 1;          -- encabezado
 
 -- 2. Partir cada línea en sus campos
@@ -40,7 +40,6 @@ UPDATE stg_cuenta SET motivo = CASE
     WHEN correo = ''                              THEN 'correo vacío'
     WHEN correo !~ '^[^@ ]+@[^@ ]+\.[^@ ]+$'      THEN 'correo mal formado'
     WHEN telefono !~ '^[0-9]{7,10}$'              THEN 'teléfono no numérico o de longitud inválida'
-    WHEN anio_publicacion !~ '^[0-9]{4}$'         THEN 'año de publicación no numérico o de longitud inválida'
     WHEN EXISTS (SELECT 1 FROM cuenta l WHERE l.documento = stg_cuenta.documento)
                                                   THEN 'documento ya existe'
     WHEN EXISTS (SELECT 1 FROM cuenta l WHERE l.correo = stg_cuenta.correo)
@@ -71,7 +70,7 @@ WHERE motivo IS NULL;
 
 -- 6. Rechazadas a la bitácora
 INSERT INTO rechazo_carga (archivo, linea, contenido, motivo)
-SELECT :'archivo', linea_csv, contenido, motivo
+SELECT :'archivo_lectores', linea_csv, contenido, motivo
 FROM stg_cuenta
 WHERE motivo IS NOT NULL;
 

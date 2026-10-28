@@ -15,7 +15,7 @@ CREATE TABLE libro (
     titulo                  varchar(200)  NOT NULL CHECK (titulo <> ''),
     autor                   varchar(120)  NOT NULL CHECK (autor <> ''),
     categoria               varchar(40)   NOT NULL CHECK (categoria <> ''),
-    anio_publicacion        varchar(40)       NOT NULL CHECK (anio_publicacion <> ''),
+    anio_publicacion        smallint      NOT NULL CHECK (anio_publicacion BETWEEN 1000 AND 2100),
     ejemplares_disponibles  integer       NOT NULL CHECK (ejemplares_disponibles >= 0)
 );
 
@@ -68,10 +68,10 @@ CREATE TABLE stg_cuenta (
     apellidos  text,
     correo     text,
     telefono   text,
-    motivo      text,
-    linea_csv   integer,  -- número de línea del archivo
-    contenido   text,      -- la línea completa del archivo
-    num_campos  integer   -- número de campos separados por coma
+    motivo     text,
+    linea_csv  integer,  -- número de línea del archivo
+    contenido  text,      -- la línea completa del archivo
+    num_campos integer   -- número de campos separados por coma
 );
 
 CREATE TABLE rechazo_carga (

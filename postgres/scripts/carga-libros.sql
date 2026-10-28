@@ -12,7 +12,7 @@
 \set ON_ERROR_STOP on
 \if :{?archivo_libros}
 \else
-    \set archivo /scripts/datos/libros_semilla.csv
+    \set archivo_libros /scripts/datos/libros_semilla.csv
 \endif
 
 SET search_path TO Biblioteca;
@@ -26,7 +26,7 @@ TRUNCATE stg_linea, stg_libro RESTART IDENTITY;
 --    entera en una sola columna, así que ni una fila con columnas de más
 --    detiene la lectura. Funciona porque los CSV del curso no traen
 --    comas dentro de comillas.
-COPY stg_linea (linea) FROM :'archivo' WITH (FORMAT text);
+COPY stg_linea (linea) FROM :'archivo_libros' WITH (FORMAT text);
 DELETE FROM stg_linea WHERE n = 1;          -- la línea 1 es el encabezado
 
 -- 2. Partir cada línea en sus campos (todavía como texto)
@@ -52,8 +52,9 @@ UPDATE stg_libro SET motivo = CASE
     WHEN titulo = ''                              THEN 'título vacío'
     WHEN autor = ''                               THEN 'autor vacío'
     WHEN categoria = ''                           THEN 'categoría vacía'
-    WHEN anio_publicacion !~ '^[0-9]{1,4}$'       THEN 'año no numérico'
-    WHEN anio_publicacion::integer NOT BETWEEN 1450 AND 2100
+
+    WHEN anio_publicacion !~ '^-?[0-9]{1,6}$'     THEN 'año no numérico'
+    WHEN anio_publicacion::integer NOT BETWEEN 1000 AND 2100
                                                   THEN 'año fuera de rango'
     WHEN ejemplares_disponibles !~ '^-?[0-9]{1,6}$'
                                                   THEN 'ejemplares no numérico'
@@ -81,7 +82,7 @@ WHERE motivo IS NULL;
 
 -- 6. Dejar constancia de las rechazadas
 INSERT INTO rechazo_carga (archivo, linea, contenido, motivo)
-SELECT :'archivo', linea_csv, contenido, motivo
+SELECT :'archivo_libros', linea_csv, contenido, motivo
 FROM stg_libro
 WHERE motivo IS NOT NULL;
 
