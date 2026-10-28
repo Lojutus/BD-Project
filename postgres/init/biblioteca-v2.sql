@@ -62,7 +62,7 @@ CREATE TABLE stg_libro (
     num_campos              integer   -- número de campos separados por coma
 );
 
-CREATE TABLE stg_usuario (
+CREATE TABLE stg_cuenta (
     documento  text,
     nombres    text,
     apellidos  text,
