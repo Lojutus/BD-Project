@@ -40,9 +40,10 @@ UPDATE stg_cuenta SET motivo = CASE
     WHEN correo = ''                              THEN 'correo vacío'
     WHEN correo !~ '^[^@ ]+@[^@ ]+\.[^@ ]+$'      THEN 'correo mal formado'
     WHEN telefono !~ '^[0-9]{7,10}$'              THEN 'teléfono no numérico o de longitud inválida'
-    WHEN EXISTS (SELECT 1 FROM usuario l WHERE l.documento = stg_usuario.documento)
+    WHEN anio_publicacion !~ '^[0-9]{4}$'         THEN 'año de publicación no numérico o de longitud inválida'
+    WHEN EXISTS (SELECT 1 FROM cuenta l WHERE l.documento = stg_cuenta.documento)
                                                   THEN 'documento ya existe'
-    WHEN EXISTS (SELECT 1 FROM usuario l WHERE l.correo = stg_usuario.correo)
+    WHEN EXISTS (SELECT 1 FROM cuenta l WHERE l.correo = stg_cuenta.correo)
                                                   THEN 'correo ya registrado por otro lector'
 END;
 

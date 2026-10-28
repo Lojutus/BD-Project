@@ -15,7 +15,7 @@ CREATE TABLE libro (
     titulo                  varchar(200)  NOT NULL CHECK (titulo <> ''),
     autor                   varchar(120)  NOT NULL CHECK (autor <> ''),
     categoria               varchar(40)   NOT NULL CHECK (categoria <> ''),
-    anio_publicacion        smallint      NOT NULL CHECK (anio_publicacion BETWEEN 1000 AND 2100),
+    anio_publicacion        varchar(40)       NOT NULL CHECK (anio_publicacion <> ''),
     ejemplares_disponibles  integer       NOT NULL CHECK (ejemplares_disponibles >= 0)
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE stg_libro (
     titulo                  text,
     autor                   text,
     categoria               text,
-    anio_publicacion        integer,
+    anio_publicacion        text,
     ejemplares_disponibles  text,
     motivo                  text,      -- NULL = la fila pasó la validación
     linea_csv               integer,  -- número de línea del archivo
