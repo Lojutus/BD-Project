@@ -7,7 +7,7 @@ CSV de ejemplo para el **Hito 2** (`../definicion-proyecto-final.md`, sección 8
 | Archivo | Filas | Para qué |
 |---|---|---|
 | `libros_semilla.csv` | 32 libros | Catálogo base, todos los datos válidos. Suficientes títulos para que el reporte "20 libros más prestados" tenga sentido (más de 20 para elegir entre ellos). |
-| `lectores_semilla.csv` | 20 lectores | Usuarios lectores base, todos los datos válidos. |
+| `lectores_semilla.csv` | 20 lectores | cuentas lectores base, todos los datos válidos. |
 | `libros_semilla_con_errores.csv` | 8 filas | **Deliberadamente con errores** — para probar la validación de la carga (Hito 2, criterio "Manejo de errores de carga"). No se espera que estas filas queden en el catálogo tal cual. |
 | `lectores_semilla_con_errores.csv` | 6 filas | Igual que el anterior, para lectores. |
 

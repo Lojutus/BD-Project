@@ -9,7 +9,7 @@ Decisiones de carga documentadas:
 
 - La contraseña inicial de cada lector es su número de documento, guardada con hash
   bccrypt mediante `pgcrypto` (`crypt(documento, gen_salt('bf'))`). No en texto plano segun la sugerencia.
-- Todo lector que entra por esta carga queda con `tipo_usuario = 'Lector'`.
+- Todo lector que entra por esta carga queda con `tipo_cuenta = 'Lector'`.
 - Las filas inválidas no se insertan: se registran en `rechazo_carga` con archivo,
   línea, contenido original y motivo, para poder corregirlas y volver a cargarlas.
 
@@ -49,7 +49,7 @@ COMMIT
 (0 rows)
 ```
 
-Las 20 filas entraron a `usuario` y a `cuenta`, y la bitácora quedó vacía, entonces el archivo
+Las 20 filas entraron a `cuenta` y a `cuenta`, y la bitácora quedó vacía, entonces el archivo
 no traía ningún error.
 
 ## 2. Lectores semilla con errores
@@ -142,7 +142,7 @@ COMMIT
 (3 rows)
 ```
 
-El error de la línea 7 no lo detecta la base de datos, el `UNIQUE` del correo distingue mayúsculas, así que `Sara.Villegas` y `sara.villegas` quedan como cadenas distintas. Tampoco lo detecta una consulta a `usuario`, porque en ese momento ninguna de las dos filas está insertada, las dos vienen en el mismo archivo; esto se detecta el paso 4 del script, que compara las filas del archivo entre sí y rechaza la segunda.
+El error de la línea 7 no lo detecta la base de datos, el `UNIQUE` del correo distingue mayúsculas, así que `Sara.Villegas` y `sara.villegas` quedan como cadenas distintas. Tampoco lo detecta una consulta a `cuenta`, porque en ese momento ninguna de las dos filas está insertada, las dos vienen en el mismo archivo; esto se detecta el paso 4 del script, que compara las filas del archivo entre sí y rechaza la segunda.
 
 ## 4. Repetición de la carga (no debe duplicar)
 
@@ -192,13 +192,13 @@ COMMIT
 ## Estado final de la base
 
 ```text
- usuarios | cuentas | bitacora 
+ cuentas | cuentas | bitacora 
 ----------+---------+----------
        25 |      25 |       17
 (1 row)
 ```
 
-25 usuarios = 20 de la semilla + 5 del CSV propio. Las 25 cuentas quedaron con `hash bcrypt` y `tipo_usuario = 'Lector'`. Las 17 filas de la bitácora son 6 de
+25 cuentas = 20 de la semilla + 5 del CSV propio. Las 25 cuentas quedaron con `hash bcrypt` y `tipo_cuenta = 'Lector'`. Las 17 filas de la bitácora son 6 de
 la corrida 2, 3 de la corrida 3 y 8 de la corrida 4.
 
 ## Prueba de la última línea de defensa
@@ -226,7 +226,7 @@ psql:/tmp/carga-sin-regla.sql:61: ERROR:  value too long for type character vary
 ```
 
 **Qué pasó.** La fila 5 del archivo (`1000000023,...,tres-cero-cero`) ya no la atrapa el
-`CASE`, así que llega hasta el `INSERT` en `usuario` y el esquema la rechaza. El error no
+`CASE`, así que llega hasta el `INSERT` en `cuenta` y el esquema la rechaza. El error no
 viene del `CHECK` del patrón sino de la longitud del tipo ya que la columna es `varchar(10)` y `tres-cero-cero`
 tiene 14 caracteres, así que el tipo la rechaza antes de que el `CHECK` llegue a evaluarse.
 
@@ -239,13 +239,13 @@ entr `BEGIN` y `COMMIT`, el fallo deshace la transacción entera, incluido el
 `TRUNCATE` inicial. Estado después de la prueba:
 
 ```text
- usuarios | cuentas | bitacora 
+ cuentas | cuentas | bitacora 
 ----------+---------+----------
        25 |      25 |       17
 (1 row)
 ```
 
-`stg_usuario` conservó las 8 filas de la corrida anterior, que es la prueba de que el
+`stg_cuenta` conservó las 8 filas de la corrida anterior, que es la prueba de que el
 rollback alcanzó también a las tablas de paso.
 
 **Conclusión.** El `CHECK` y el tipo de dato son la última línea de defensa, pero cuando

@@ -2,7 +2,7 @@ DROP SCHEMA IF EXISTS Biblioteca CASCADE;
 CREATE SCHEMA Biblioteca;
 SET search_path TO Biblioteca;
 
-CREATE TABLE usuario (
+CREATE TABLE cuenta (
     documento  varchar(10)   PRIMARY KEY CHECK (documento ~ '^[0-9]{8,10}$'),
     nombres    varchar(80)   NOT NULL CHECK (nombres <> ''),
     apellidos  varchar(80)   NOT NULL CHECK (apellidos <> ''),
@@ -19,8 +19,8 @@ CREATE TABLE libro (
     ejemplares_disponibles  integer       NOT NULL CHECK (ejemplares_disponibles >= 0)
 );
 
-CREATE TABLE cuenta (
-    documento_usuario   varchar(10)     PRIMARY KEY  REFERENCES usuario(documento) ,
+CREATE TABLE usuario (
+    documento_usuario   varchar(10)     PRIMARY KEY  REFERENCES cuenta(documento) ,
     contrasena          varchar(255)    NOT NULL ,
     tipo_usuario        varchar(20)     NOT NULL CHECK(tipo_usuario IN ('Lector','Bibliotecario','Administrador','Auditor'))
 );
@@ -28,9 +28,10 @@ CREATE TABLE cuenta (
 CREATE TABLE prestamo (
     id_prestamo         SERIAL        PRIMARY KEY,
     libro_prestado      varchar(13)   NOT NULL REFERENCES libro(isbn),
-    documento_usuario   varchar(10)   NOT NULL REFERENCES usuario(documento),
+    documento_usuario   varchar(10)   NOT NULL REFERENCES cuenta(documento),
     fecha_inicio        date          NOT NULL,
     fecha_limite        date          NOT NULL,
+    fecha_devolucion    date          NULL,
     devolucion          boolean       NOT NULL DEFAULT false , 
     CHECK (fecha_limite >= fecha_inicio)
 
@@ -53,7 +54,7 @@ CREATE TABLE stg_libro (
     titulo                  text,
     autor                   text,
     categoria               text,
-    anio_publicacion        text,
+    anio_publicacion        integer,
     ejemplares_disponibles  text,
     motivo                  text,      -- NULL = la fila pasó la validación
     linea_csv               integer,  -- número de línea del archivo

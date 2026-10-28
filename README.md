@@ -56,7 +56,7 @@ docker compose up -d
 Eso levanta los tres servicios. La primera vez, Postgres ejecuta los
 scripts de `postgres/init/` (si hay alguno) para crear el esquema inicial.
 
-- **PostgreSQL:** `localhost:5432`, usuario/clave `biblioteca`, base `biblioteca`.
+- **PostgreSQL:** `localhost:5432`, cuenta/clave `biblioteca`, base `biblioteca`.
 - **pgAdmin:** abre `http://localhost:5050` — el servidor "biblioteca -
   PostgreSQL" ya está precargado, solo pide la contraseña de Postgres
   (`biblioteca`) la primera vez y luego la recuerda.
@@ -116,7 +116,7 @@ parar los contenedores; los datos de Postgres en `postgres/data/` no se
 tocan porque son una carpeta del host, no un volumen).
 
 En Linux, si `rm -rf postgres/data/*` da "Permission denied": Postgres deja
-su carpeta de datos con permisos restringidos (dueño el usuario interno del
+su carpeta de datos con permisos restringidos (dueño el cuenta interno del
 contenedor), es normal. Bórrala desde dentro de Docker en vez de a mano:
 
 ```bash
@@ -144,5 +144,5 @@ Copia `.env.example` a `.env` y cambia `POSTGRES_PORT`, `PGADMIN_PORT` o
 **¿Cómo conecto mi código Node a Postgres?**
 Desde dentro del contenedor, el host de la base es `postgres` (nombre del
 servicio), no `localhost`. Con la librería `pg`, `new Pool()` sin
-argumentos ya funciona: toma host/usuario/clave/base de las variables de
+argumentos ya funciona: toma host/cuenta/clave/base de las variables de
 entorno que el `docker-compose.yml` le pasa al contenedor `node`.
