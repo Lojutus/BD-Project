@@ -39,11 +39,14 @@ CREATE TABLE prestamo (
     documento_usuario   varchar(10)   NOT NULL REFERENCES cuenta(documento),
     fecha_inicio        date          NOT NULL,
     fecha_limite        date          NOT NULL,
-    fecha_devolucion    date          NULL,
+    fecha_devolucion    date          DEFAULT NULL,
     CHECK               (fecha_limite >= fecha_inicio AND (fecha_devolucion IS NULL OR fecha_devolucion >= fecha_inicio)),
     FOREIGN KEY         (numero_ejemplar, isbn_libro)  REFERENCES ejemplar(numero_ejemplar, isbn_libro)
 
 );
+CREATE UNIQUE INDEX idx_ejemplar_prestamo_activo 
+ON prestamo (numero_ejemplar, isbn_libro) 
+WHERE fecha_devolucion IS NULL;
 
 -- ---------------------------------------------------------------
 -- Tablas de paso (staging): todo es texto y nada tiene restricciones,
