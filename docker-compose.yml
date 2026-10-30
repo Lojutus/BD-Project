@@ -67,40 +67,39 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-  node:
-    image: node:20-alpine
-    container_name: curso_node
-    restart: unless-stopped
-    working_dir: /usr/src/app
-    environment:
-      PORT: ${NODE_PORT:-3000}
-      # Variables estándar de libpq: la librería `pg` las lee solas con
-      # `new Pool()` sin necesidad de pasarle credenciales en el código.
-      PGHOST: postgres
-      PGPORT: 5432
-      PGUSER: ${POSTGRES_USER:-biblioteca}
-      PGPASSWORD: ${POSTGRES_PASSWORD:-biblioteca}
-      PGDATABASE: ${POSTGRES_DB:-biblioteca}
-      DATABASE_URL: postgres://${POSTGRES_USER:-biblioteca}:${POSTGRES_PASSWORD:-biblioteca}@postgres:5432/${POSTGRES_DB:-biblioteca}
-    ports:
-      - "${NODE_PORT:-3000}:${NODE_PORT:-3000}"
-    volumes:
-      # El proyecto Node.js de la práctica/proyecto en curso. Se reemplaza el
-      # contenido de esta carpeta cada vez que se cambia de práctica.
-      - ./node/proyecto:/usr/src/app
-      # node_modules vive en un volumen aparte (no en el host) para no
-      # mezclar binarios nativos compilados en Linux con los del sistema
-      # operativo del estudiante, y para que "npm install" no sea lentísimo.
-      - node_modules:/usr/src/app/node_modules
-      - ./node/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
-    entrypoint: [ "sh", "/usr/local/bin/docker-entrypoint.sh" ]
-    depends_on:
-      postgres:
-        condition: service_healthy
-    tty: true
-    stdin_open: true
+  # node:
+  #   image: node:20-alpine
+  #   container_name: curso_node
+  #   restart: unless-stopped
+  #   working_dir: /usr/src/app
+  #   environment:
+  #     PORT: ${NODE_PORT:-3000}
+  #     # Variables estándar de libpq: la librería `pg` las lee solas con
+  #     # `new Pool()` sin necesidad de pasarle credenciales en el código.
+  #     PGHOST: postgres
+  #     PGPORT: 5432
+  #     PGUSER: ${POSTGRES_USER:-biblioteca}
+  #     PGPASSWORD: ${POSTGRES_PASSWORD:-biblioteca}
+  #     PGDATABASE: ${POSTGRES_DB:-biblioteca}
+  #     DATABASE_URL: postgres://${POSTGRES_USER:-biblioteca}:${POSTGRES_PASSWORD:-biblioteca}@postgres:5432/${POSTGRES_DB:-biblioteca}
+  #   ports:
+  #     - "${NODE_PORT:-3000}:${NODE_PORT:-3000}"
+  #   volumes:
+  #     # El proyecto Node.js de la práctica/proyecto en curso. Se reemplaza el
+  #     # contenido de esta carpeta cada vez que se cambia de práctica.
+  #     - ./node/proyecto:/usr/src/app
+  #     # node_modules vive en un volumen aparte (no en el host) para no
+  #     # mezclar binarios nativos compilados en Linux con los del sistema
+  #     # operativo del estudiante, y para que "npm install" no sea lentísimo.
+  #     - node_modules:/usr/src/app/node_modules
+  #     - ./node/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+  #   entrypoint: [ "sh", "/usr/local/bin/docker-entrypoint.sh" ]
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   tty: true
+  #   stdin_open: true
 
 volumes:
-  node_modules:
+  # node_modules:
   pgadmin_data:
