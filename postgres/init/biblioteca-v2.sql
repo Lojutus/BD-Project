@@ -2,7 +2,7 @@ DROP SCHEMA IF EXISTS Biblioteca CASCADE;
 CREATE SCHEMA Biblioteca;
 SET search_path TO Biblioteca;
 
-CREATE TABLE cuenta (
+CREATE TABLE usuario (
     documento  varchar(10)   PRIMARY KEY CHECK (documento ~ '^[0-9]{8,10}$'),
     nombres    varchar(80)   NOT NULL CHECK (nombres <> ''),
     apellidos  varchar(80)   NOT NULL CHECK (apellidos <> ''),
@@ -19,8 +19,15 @@ CREATE TABLE libro (
     ejemplares_disponibles  integer       NOT NULL CHECK (ejemplares_disponibles >= 0)
 );
 
-CREATE TABLE usuario (
-    documento_usuario   varchar(10)     PRIMARY KEY  REFERENCES cuenta(documento) ,
+CREATE TABLE ejemplar(
+    numero_ejemplar     SERIAL,
+    isbn_libro          varchar(13) REFERENCES libro(isbn),
+    estado_ejemplar     smallint NOT NULL CHECK(estado_ejemplar BETWEEN 1 AND 10) DEFAULT 10,
+    PRIMARY KEY         (numero_ejemplar, isbn_libro) 
+);
+
+CREATE TABLE cuenta (
+    documento_usuario   varchar(10)     PRIMARY KEY  REFERENCES usuario(documento) ,
     contrasena          varchar(255)    NOT NULL ,
     tipo_usuario        varchar(20)     NOT NULL CHECK(tipo_usuario IN ('Lector','Bibliotecario','Administrador','Auditor'))
 );
@@ -28,10 +35,9 @@ CREATE TABLE usuario (
 CREATE TABLE prestamo (
     id_prestamo         SERIAL        PRIMARY KEY,
     libro_prestado      varchar(13)   NOT NULL REFERENCES libro(isbn),
-    documento_usuario   varchar(10)   NOT NULL REFERENCES cuenta(documento),
+    documento_usuario   varchar(10)   NOT NULL REFERENCES usuario(documento),
     fecha_inicio        date          NOT NULL,
     fecha_limite        date          NOT NULL,
-    fecha_devolucion    date          NULL,
     devolucion          boolean       NOT NULL DEFAULT false , 
     CHECK (fecha_limite >= fecha_inicio)
 
@@ -62,16 +68,16 @@ CREATE TABLE stg_libro (
     num_campos              integer   -- número de campos separados por coma
 );
 
-CREATE TABLE stg_cuenta (
+CREATE TABLE stg_usuario (
     documento  text,
     nombres    text,
     apellidos  text,
     correo     text,
     telefono   text,
-    motivo     text,
-    linea_csv  integer,  -- número de línea del archivo
-    contenido  text,      -- la línea completa del archivo
-    num_campos integer   -- número de campos separados por coma
+    motivo      text,
+    linea_csv   integer,  -- número de línea del archivo
+    contenido   text,      -- la línea completa del archivo
+    num_campos  integer   -- número de campos separados por coma
 );
 
 CREATE TABLE rechazo_carga (
