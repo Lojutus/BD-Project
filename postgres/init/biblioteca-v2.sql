@@ -19,21 +19,29 @@ CREATE TABLE libro (
     ejemplares_disponibles  integer       NOT NULL CHECK (ejemplares_disponibles >= 0)
 );
 
+CREATE TABLE ejemplar(
+    numero_ejemplar     smallint        NOT NULL CHECK(numero_ejemplar > 0),
+    isbn_libro          varchar(13)     REFERENCES libro(isbn),
+    estado_ejemplar     smallint        NOT NULL CHECK(estado_ejemplar BETWEEN 1 AND 10) DEFAULT 10,
+    PRIMARY KEY         (numero_ejemplar, isbn_libro) 
+);
+
 CREATE TABLE usuario (
-    documento_usuario   varchar(10)     PRIMARY KEY  REFERENCES cuenta(documento) ,
-    contrasena          varchar(255)    NOT NULL ,
-    tipo_usuario        varchar(20)     NOT NULL CHECK(tipo_usuario IN ('Lector','Bibliotecario','Administrador','Auditor'))
+    documento_usuario   varchar(10)   PRIMARY KEY  REFERENCES cuenta(documento) ,
+    contrasena          varchar(255)  NOT NULL ,
+    tipo_usuario        varchar(20)   NOT NULL CHECK(tipo_usuario IN ('Lector','Bibliotecario','Administrador','Auditor'))
 );
 
 CREATE TABLE prestamo (
     id_prestamo         SERIAL        PRIMARY KEY,
-    libro_prestado      varchar(13)   NOT NULL REFERENCES libro(isbn),
+    numero_ejemplar     smallint      NOT NULL,
+    isbn_libro          varchar(13)   NOT NULL,
     documento_usuario   varchar(10)   NOT NULL REFERENCES cuenta(documento),
     fecha_inicio        date          NOT NULL,
     fecha_limite        date          NOT NULL,
     fecha_devolucion    date          NULL,
-    devolucion          boolean       NOT NULL DEFAULT false , 
-    CHECK (fecha_limite >= fecha_inicio)
+    CHECK               (fecha_limite >= fecha_inicio AND (fecha_devolucion IS NULL OR fecha_devolucion >= fecha_inicio)),
+    FOREIGN KEY         (numero_ejemplar, isbn_libro)  REFERENCES ejemplar(numero_ejemplar, isbn_libro)
 
 );
 
