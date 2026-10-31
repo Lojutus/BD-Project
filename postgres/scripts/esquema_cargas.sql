@@ -8,12 +8,12 @@
 SET search_path TO Biblioteca;
 
 -- Una fila por línea del archivo, sin partir en columnas
-CREATE TABLE stg_linea (
+CREATE TABLE IF NOT EXISTS stg_linea (
     n      integer  GENERATED ALWAYS AS IDENTITY,  -- número de línea del archivo
     linea  text
 );
 
-CREATE TABLE stg_libro (
+CREATE TABLE IF NOT EXISTS stg_libro (
     isbn                    text,
     titulo                  text,
     autor                   text,
@@ -26,7 +26,7 @@ CREATE TABLE stg_libro (
     num_campos              integer   -- número de campos separados por coma
 );
 
-CREATE TABLE stg_cuenta (
+CREATE TABLE IF NOT EXISTS stg_cuenta (
     documento  text,
     nombres    text,
     apellidos  text,
@@ -38,7 +38,7 @@ CREATE TABLE stg_cuenta (
     num_campos integer   -- número de campos separados por coma
 );
 
-CREATE TABLE rechazo_carga (
+CREATE TABLE IF NOT EXISTS rechazo_carga (
     id        SERIAL PRIMARY KEY,
     archivo   text      NOT NULL,
     linea     integer   NOT NULL,
