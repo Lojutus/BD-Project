@@ -35,9 +35,9 @@ WHERE libros_leidos = (SELECT max(libros_leidos) FROM leidos)
 ORDER BY apellidos, nombres;
 
 --reporte 3:
--- Se decidió hacer la búsqueda buscando con dos reglas: que fecha devolución sea nulo y que la fecha límite sea menor a la fecha actual,
--- se filtra por estas condiciones, y se ejecuta un EXIST, donde por cada cuenta busca la información retenida en préstamos. 
-
+-- qué devuelve: los lectores que tienen libros prestados y ya vencieron.
+-- decisiones: se decidió hacer la búsqueda buscando con dos reglas: que fecha devolución sea nulo y que la fecha límite sea menor a la fecha actual,
+-- resultado esperado: Elena Vargas y Luis Torres.
 SELECT c.documento, c.nombres, c.apellidos
 FROM   cuenta c
 WHERE  EXISTS (SELECT 1
