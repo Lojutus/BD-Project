@@ -17,6 +17,13 @@ docker compose exec postgres psql -U biblioteca -d biblioteca
 biblioteca=# \i /scripts/mi_consulta.sql
 ```
 
+Antes de hacer una carga, se debe correr esquema_cargas.sql:
+
+```bash
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/esquema_cargas.sql
+```
+
+
 Si se desea cargar los datos de libros_semilla.csv / lectores_semilla.csv ejecute los comandos: 
 ```bash
 docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/carga-libros.sql
