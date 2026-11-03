@@ -12,7 +12,6 @@ JOIN detalle d ON p.id_pedido = d.id_pedido
 JOIN producto pr ON d.id_producto = pr.id_producto
 WHERE p.id_pedido = 1003;
 
-
 -- Consulta 2: Cada cliente con el nombre del cliente que lo refirió; los que llegaron solos también deben aparecer.
 SELECT 
     c.nombre AS cliente,
@@ -21,10 +20,13 @@ FROM cliente c
 LEFT JOIN cliente r ON r.id_cliente = c.referido_por
 ORDER BY c.id_cliente;
 
-
 -- Consulta 3: Productos que nunca se han vendido (en ningún pedido, ni siquiera cancelado).
-
-
+SELECT id_producto
+FROM producto prod
+WHERE NOT EXISTS (
+  SELECT id_producto FROM detalle det
+  WHERE prod.id_producto = det.id_producto
+); 
 
 -- Consulta 4: Cada cliente con su número de pedidos (todos, incluidos los cancelados), mostrando 0 para quien no tiene ninguno.
 SELECT 
@@ -74,7 +76,6 @@ WHERE pr.precio > (
 )
 ORDER BY pr.categoria, pr.precio;
 
-
 -- Consulta 8: Clientes de Cali que han comprado al menos un accesorio, sin cancelados. Cada cliente una sola vez.
 SELECT c.nombre AS nombre_cliente
 FROM cliente c
@@ -89,10 +90,14 @@ AND EXISTS (
     AND p.estado <> 'cancelado'
 );
 
-
 -- Consulta 9: Explicación de la trampa de NOT IN y versión correcta para "clientes que no han referido a nadie".
 
-
+SELECT id_cliente AS clientes_sinreferir
+FROM cliente t1
+WHERE NOT EXISTS(
+    SELECT referido_por FROM cliente t2
+    WHERE t1.id_cliente = t2.referido_por
+);
 
 -- Consulta 10: El o los clientes que más han gastado (sin cancelados), con su total.
 WITH gasto AS (
@@ -109,7 +114,6 @@ WITH gasto AS (
 SELECT nombre, total
 FROM gasto
 WHERE total = (SELECT MAX(total) FROM gasto);
-
 
 -- Consulta 11: Clientes que han comprado todos los productos de la categoría Grano, sin cancelados.
 SELECT c.nombre AS nombre_cliente
