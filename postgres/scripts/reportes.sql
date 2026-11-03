@@ -37,7 +37,7 @@ ORDER BY apellidos, nombres;
 --reporte 3:
 -- qué devuelve: los lectores que tienen libros prestados y ya vencieron.
 -- decisiones: se decidió hacer la búsqueda buscando con dos reglas: que fecha devolución sea nulo y que la fecha límite sea menor a la fecha actual,
--- resultado esperado: Elena Vargas y Luis Torres.
+-- resultado esperado: Elena Vargas.
 SELECT c.documento, c.nombres, c.apellidos
 FROM   cuenta c
 WHERE  EXISTS (SELECT 1
@@ -46,3 +46,13 @@ WHERE  EXISTS (SELECT 1
                  AND  p.fecha_devolucion IS NULL          -- no devuelto
                  AND  p.fecha_limite < CURRENT_DATE)      -- ya vencido
 ORDER BY c.apellidos;
+
+
+--reporte 4:
+-- qué devuelve: datos de usuarios por préstamos en mora.
+-- resultado esperado: Elena Vargas aparece dos veces
+SELECT c.nombres, c.correo, c.telefono
+FROM   cuenta c
+JOIN  prestamo p ON p.documento_usuario = c.documento
+WHERE  p.fecha_devolucion IS NULL AND p.fecha_limite < CURRENT_DATE
+ORDER BY c.nombres;
