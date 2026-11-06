@@ -1,0 +1,146 @@
+SET
+ cedula_dueno 
+--------------
+ 16700002
+(1 row)
+
+ cod_mecanico 
+--------------
+(0 rows)
+
+ cod_servicio 
+--------------
+(0 rows)
+
+ placa 
+-------
+(0 rows)
+
+ modelo 
+--------
+(0 rows)
+
+ num_orden 
+-----------
+(0 rows)
+
+ num_orden | fecha_ingreso | telefono_dueno 
+-----------+---------------+----------------
+      5002 | 2026-10-02    | 3104445566
+      5002 | 2026-10-02    | 3104445566
+      5003 | 2026-10-05    | 3104445566
+      5003 | 2026-10-05    | 3104445566
+      5006 | 2026-10-20    | 3104445567
+(5 rows)
+
+UPDATE 5
+psql:/scripts/normalizacion.sql:60: NOTICE:  table "dueno" does not exist, skipping
+DROP TABLE
+psql:/scripts/normalizacion.sql:61: NOTICE:  table "mecanico" does not exist, skipping
+DROP TABLE
+psql:/scripts/normalizacion.sql:62: NOTICE:  table "servicio" does not exist, skipping
+DROP TABLE
+psql:/scripts/normalizacion.sql:63: NOTICE:  table "referencia_carro" does not exist, skipping
+DROP TABLE
+psql:/scripts/normalizacion.sql:64: NOTICE:  table "carro" does not exist, skipping
+DROP TABLE
+psql:/scripts/normalizacion.sql:65: NOTICE:  table "orden" does not exist, skipping
+DROP TABLE
+psql:/scripts/normalizacion.sql:66: NOTICE:  table "orden_servicio" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 3
+INSERT 0 3
+INSERT 0 4
+INSERT 0 5
+INSERT 0 4
+INSERT 0 6
+INSERT 0 11
+ count 
+-------
+     3
+(1 row)
+
+ count 
+-------
+     3
+(1 row)
+
+ count 
+-------
+     4
+(1 row)
+
+ count 
+-------
+     5
+(1 row)
+
+ count 
+-------
+     4
+(1 row)
+
+ count 
+-------
+     6
+(1 row)
+
+ count 
+-------
+    11
+(1 row)
+
+psql:/scripts/normalizacion.sql:147: NOTICE:  view "reconstruida" does not exist, skipping
+DROP VIEW
+CREATE VIEW
+ num_orden | fecha_ingreso | kilometraje | placa | modelo | marca | cedula_dueno | nombre_dueno | telefono_dueno | cod_servicio | nombre_servicio | precio_lista | precio_cobrado | cod_mecanico | nombre_mecanico 
+-----------+---------------+-------------+-------+--------+-------+--------------+--------------+----------------+--------------+-----------------+--------------+----------------+--------------+-----------------
+(0 rows)
+
+ num_orden | fecha_ingreso | kilometraje | placa | modelo | marca | cedula_dueno | nombre_dueno | telefono_dueno | cod_servicio | nombre_servicio | precio_lista | precio_cobrado | cod_mecanico | nombre_mecanico 
+-----------+---------------+-------------+-------+--------+-------+--------------+--------------+----------------+--------------+-----------------+--------------+----------------+--------------+-----------------
+(0 rows)
+
+UPDATE 1
+ cedula_dueno | nombre_dueno | telefono_dueno 
+--------------+--------------+----------------
+ 16700002     | Jorge Mejía  | 3104400000
+(1 row)
+
+ num_orden | telefono_dueno 
+-----------+----------------
+      5002 | 3104400000
+      5003 | 3104400000
+      5006 | 3104400000
+(3 rows)
+
+INSERT 0 1
+ cod_mecanico | nombre_mecanico  
+--------------+------------------
+ 111          | Lojutus mecanico
+(1 row)
+
+DELETE 3
+DELETE 1
+ num_orden | fecha_ingreso | kilometraje | placa 
+-----------+---------------+-------------+-------
+(0 rows)
+
+ placa  | modelo | cedula_dueno 
+--------+--------+--------------
+ JKL012 | Duster | 1144000003
+(1 row)
+
+ cod_servicio |       nombre_servicio        | precio_lista 
+--------------+------------------------------+--------------
+ FRE          | Cambio de pastillas de freno |       150000
+ ALI          | Alineación y balanceo        |        80000
+ ACE          | Cambio de aceite             |       120000
+(3 rows)
