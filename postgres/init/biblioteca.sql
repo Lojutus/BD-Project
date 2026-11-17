@@ -7,7 +7,7 @@ CREATE TABLE cuenta (
     nombres    varchar(80)   NOT NULL CHECK (nombres <> ''),
     apellidos  varchar(80)   NOT NULL CHECK (apellidos <> ''),
     correo     varchar(120)  NOT NULL UNIQUE CHECK (correo ~ '^[^@ ]+@[^@ ]+\.[^@ ]+$'),
-    telefono   varchar(10)   NOT NULL CHECK (telefono ~ '^[0-9]{7,10}$')
+    telefono   varchar(10)   NOT NULL CHECK (telefono ~ '^[0-9]{10}$')
 );
 
 CREATE TABLE libro (
