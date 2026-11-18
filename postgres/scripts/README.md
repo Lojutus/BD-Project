@@ -35,3 +35,16 @@ Si se desea cargar  los datos de un csv en el esquema diferentes de libros_semil
 docker compose exec postgres psql -U biblioteca -d biblioteca -v archivo_libros=/scripts/datos/mis_datos.csv -f /scripts/carga-libros.sql    
 docker compose exec postgres psql -U biblioteca -d biblioteca -v archivo_lectores=/scripts/datos/mis_datos.csv -f /scripts/carga-lectores.sql    
 ```
+
+
+
+si se me olvida quitarlo porfa lo quitan :> (comandos para ejecutar normalizacion.sql)
+
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/normalizacion.sql
+
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /init/biblioteca.sql
+
+
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/esquema_cargas.sql
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/carga-libros.sql
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/carga-lectores.sql

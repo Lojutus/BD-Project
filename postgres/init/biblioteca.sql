@@ -15,8 +15,7 @@ CREATE TABLE libro (
     titulo                  varchar(200)  NOT NULL CHECK (titulo <> ''),
     autor                   varchar(120)  NOT NULL CHECK (autor <> ''),
     categoria               varchar(40)   NOT NULL CHECK (categoria <> ''),
-    anio_publicacion        smallint      NOT NULL CHECK (anio_publicacion BETWEEN 1000 AND 2100),
-    ejemplares_disponibles  integer       NOT NULL CHECK (ejemplares_disponibles >= 0)
+    anio_publicacion        smallint      NOT NULL CHECK (anio_publicacion BETWEEN 1000 AND 2100)
 );
 
 CREATE TABLE ejemplar(
@@ -44,6 +43,14 @@ CREATE TABLE prestamo (
     FOREIGN KEY         (numero_ejemplar, isbn_libro)  REFERENCES ejemplar(numero_ejemplar, isbn_libro)
 
 );
+CREATE VIEW libro_disponibles AS
+SELECT l.isbn, l.titulo, Count(e.numero_ejemplar) - Count(p.numero_ejemplar) AS ejemplares_disponibles
+FROM libro l
+LEFT JOIN ejemplar e ON e.isbn_libro = l.isbn
+LEFT JOIN prestamo p ON p.isbn_libro = e.isbn_libro AND p.numero_ejemplar = e.numero_ejemplar AND p.fecha_devolucion IS NULL
+GROUP BY l.isbn, l.titulo;
+
 CREATE UNIQUE INDEX idx_ejemplar_prestamo_activo 
 ON prestamo (numero_ejemplar, isbn_libro) 
 WHERE fecha_devolucion IS NULL;
+
