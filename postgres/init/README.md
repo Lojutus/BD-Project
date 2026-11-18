@@ -11,5 +11,3 @@ orden.
 01_esquema.sql   -- CREATE TABLE, constraints, etc.
 02_datos.sql     -- INSERT de datos semilla
 ```
-docker compose exec postgres psql -U biblioteca -d biblioteca -c "CREATE DATABASE prueba_init;"              
-docker compose exec postgres psql -U biblioteca  -d prueba_init -f /docker-entrypoint-initdb.d/biblioteca.sql
