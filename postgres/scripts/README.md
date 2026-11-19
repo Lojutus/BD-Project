@@ -17,6 +17,12 @@ docker compose exec postgres psql -U biblioteca -d biblioteca
 biblioteca=# \i /scripts/mi_consulta.sql
 ```
 
+Para cargar los datos de prueba masivos (incluye los de `datos-prueba.sql`, sobre una base recién creada):
+
+```bash
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/datos-prueba-expandido.sql
+```
+
 Antes de hacer una carga, se debe correr esquema_cargas.sql:
 
 ```bash
