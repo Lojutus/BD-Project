@@ -11,14 +11,14 @@ INSERT INTO cuenta (documento, nombres, apellidos, correo, telefono) VALUES
 ('1000000007', 'Pedro', 'Mendoza', 'pedro@test.com', '3007777777');
 
 -- 2. Insert Libros
-INSERT INTO libro (isbn, titulo, autor, categoria, anio_publicacion, ejemplares_disponibles) VALUES
-('9781111111111', 'Cien Anos de Soledad', 'Gabriel Garcia Marquez', 'Ficcion', 1967, 1),
-('9782222222222', '1984', 'George Orwell', 'Ficcion', 1949, 1),
-('9783333333333', 'Fahrenheit 451', 'Ray Bradbury', 'Ficcion', 1953, 1),
-('9784444444444', 'El Hobbit', 'J.R.R. Tolkien', 'Fantasia', 1937, 3),
-('9785555555555', 'Don Quijote de la Mancha', 'Miguel de Cervantes', 'Clasico', 1605, 3),
-('9786666666666', 'Rayuela', 'Julio Cortazar', 'Ficcion', 1963, 4),
-('9787777777777', 'Ficciones', 'Jorge Luis Borges', 'Ficcion', 1944, 4);
+INSERT INTO libro (isbn, titulo, autor, categoria, anio_publicacion) VALUES
+('9781111111111', 'Cien Anos de Soledad', 'Gabriel Garcia Marquez', 'Ficcion', 1967),
+('9782222222222', '1984', 'George Orwell', 'Ficcion', 1949),
+('9783333333333', 'Fahrenheit 451', 'Ray Bradbury', 'Ficcion', 1953),
+('9784444444444', 'El Hobbit', 'J.R.R. Tolkien', 'Fantasia', 1937),
+('9785555555555', 'Don Quijote de la Mancha', 'Miguel de Cervantes', 'Clasico', 1605),
+('9786666666666', 'Rayuela', 'Julio Cortazar', 'Ficcion', 1963),
+('9787777777777', 'Ficciones', 'Jorge Luis Borges', 'Ficcion', 1944);
 
 -- 3. Insert Ejemplares
 INSERT INTO ejemplar (numero_ejemplar, isbn_libro, estado_ejemplar) VALUES
