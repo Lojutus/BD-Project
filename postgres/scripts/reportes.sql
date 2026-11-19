@@ -1,12 +1,15 @@
 SET search_path TO Biblioteca;
 
+--Nota : Los resultados esperados son en base a los datos de prueba generados en el script datos-prueba.sql
+
 -- reporte 1:
 -- qué devuelve: los 20 libros más prestados.
 -- decisiones: cuenta todos los préstamos (abiertos y devueltos), incluye libros con 0
---   y conserva empates en el puesto 20 (WITH TIES).
+-- y conserva empates en el puesto 20 (WITH TIES).
 -- resultado esperado: 7 libros; cuatro con 3 préstamos, dos con 1 y Cien Años de Soledad con 0.
 
-SELECT l.titulo, count(pr.id_prestamo) AS num_prestamos
+
+SELECT l.isbn, l.titulo, count(pr.id_prestamo) AS num_prestamos
 FROM libro l
 LEFT JOIN prestamo pr ON pr.isbn_libro = l.isbn
 GROUP BY l.isbn, l.titulo
@@ -16,12 +19,13 @@ FETCH FIRST 20 ROWS WITH TIES;
 -- reporte 2:
 -- qué devuelve: el o los lectores que más libros han leído.
 -- decisiones: solo préstamos devueltos, empates incluidos; el nombre está en cuenta.
--- resultado esperado: Juan Pérez y María Gómez, con 3 cada uno.
+---resultado esperado: Juan Pérez y María Gómez, con 3 cada uno.
 
 WITH leidos AS (
     SELECT c.documento,
            c.nombres,
            c.apellidos,
+           c.correo,
            count(pr.id_prestamo) AS libros_leidos
     FROM cuenta c
     LEFT JOIN prestamo pr
@@ -29,7 +33,7 @@ WITH leidos AS (
           AND pr.fecha_devolucion IS NOT NULL
     GROUP BY c.documento, c.nombres, c.apellidos
 )
-SELECT documento, nombres, apellidos, libros_leidos
+SELECT documento, nombres, apellidos, correo ,  libros_leidos
 FROM leidos
 WHERE libros_leidos = (SELECT max(libros_leidos) FROM leidos)
 ORDER BY apellidos, nombres;
@@ -38,7 +42,8 @@ ORDER BY apellidos, nombres;
 -- qué devuelve: los lectores que tienen libros prestados y ya vencieron.
 -- decisiones: se decidió hacer la búsqueda buscando con dos reglas: que fecha devolución sea nulo y que la fecha límite sea menor a la fecha actual,
 -- resultado esperado: Elena Vargas.
-SELECT c.documento, c.nombres, c.apellidos
+
+SELECT c.documento, c.nombres, c.apellidos , c.correo
 FROM   cuenta c
 WHERE  EXISTS (SELECT 1
                FROM   prestamo p
@@ -51,7 +56,7 @@ ORDER BY c.apellidos;
 --reporte 4:
 -- qué devuelve: datos de usuarios por préstamos en mora.
 -- resultado esperado: Elena Vargas aparece dos veces
-SELECT c.nombres, c.correo, c.telefono
+SELECT c.documento, c.nombres, c.apellidos, c.correo
 FROM   cuenta c
 JOIN  prestamo p ON p.documento_usuario = c.documento
 WHERE  p.fecha_devolucion IS NULL AND p.fecha_limite < CURRENT_DATE
