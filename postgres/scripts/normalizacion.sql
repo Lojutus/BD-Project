@@ -77,7 +77,7 @@ GROUP BY l.isbn, l.titulo
 ORDER BY ejemplares_disponibles, l.isbn;
 
 
--- 2.2. Verificar los resultados de la vista  con datos_prueba.sql.
+-- 2.2. Verificar los resultados de la vista  con datos-prueba.sql.
 --     Se comparan los ejemplares disponibles obtenidos con los esperados.
 --
 --     ISBN             | Libro                      | Disponibles (Esperados)
@@ -99,7 +99,7 @@ FROM ejemplares_disponibles;
 ALTER TABLE libro
 DROP COLUMN ejemplares_disponibles;
 
---2.4. verificar que se mantiene el numero de registros con datos_prueba.sql
+--2.4. verificar que se mantiene el numero de registros con datos-prueba.sql
 --     resultado esperado : 7 registros
 
 SELECT COUNT(*) AS cantidad_libros
