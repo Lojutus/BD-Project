@@ -1,37 +1,105 @@
+
+-- ============================================================
+-- NORMALIZACION - ESQUEMA BIBLIOTECA
+-- ============================================================
+
 SET search_path TO Biblioteca;
---EVIDENCIAS DE CAMBIOS 
---CUENTA: SIN CAMBIOS
---LIBRO: QUITAR LA COLUMNA Y CALCULARLA EN UNA VISTA QUIE RESTE LOS PRESTAMOS CON fecha_devolucion nula
-SELECT isbn, ejemplares_disponibles AS dice, count(e.numero_ejemplar) AS reales
+
+
+-- ============================================================
+-- 1. EVIDENCIAS DE LOS CAMBIOS
+-- ============================================================
+
+-- CUENTA: Sin cambios.
+-- EJEMPLAR: Sin cambios.
+-- PRESTAMO: Sin cambios.
+-- USUARIO: Sin cambios.
+
+
+-- LIBRO:
+-- Se identifica que ejemplares_disponibles es un dato derivado,
+-- ya que puede calcularse contando los ejemplares y restando
+-- aquellos que tienen un prestamo activo.
+--
+-- Actualmente, la columna almacena la cantidad total de
+-- ejemplares y no la cantidad realmente disponible.
+-- Por tanto, se trata de una redundancia de un dato derivado
+-- que, ademas, presenta inconsistencias.
+
+
+-- Consulta de evidencia:
+-- Compara el valor almacenado con la cantidad real de
+-- ejemplares disponibles.
+
+SELECT
+    l.isbn,
+    l.ejemplares_disponibles AS valor_almacenado,
+    COUNT(e.numero_ejemplar) AS disponibilidad_real
 FROM libro l
-LEFT JOIN ejemplar e ON e.isbn_libro = l.isbn
-  AND NOT EXISTS (SELECT 1 FROM prestamo p WHERE p.isbn_libro = e.isbn_libro
-                  AND p.numero_ejemplar = e.numero_ejemplar AND p.fecha_devolucion IS NULL)
-GROUP BY isbn, ejemplares_disponibles
-HAVING ejemplares_disponibles <> count(e.numero_ejemplar); 
---ejemplares_disponibles es un dato derivado que sale de contar lo ejemplares menos los prestamos activos y ademas esta mal calculado,
--- actualmente guarda la cantidad de ejemplares, no los disponibles; es una redundancia de dato derivado.
+LEFT JOIN ejemplar e
+    ON e.isbn_libro = l.isbn
+    AND NOT EXISTS (
+        SELECT 1
+        FROM prestamo p
+        WHERE p.isbn_libro = e.isbn_libro
+          AND p.numero_ejemplar = e.numero_ejemplar
+          AND p.fecha_devolucion IS NULL
+    )
+GROUP BY
+    l.isbn,
+    l.ejemplares_disponibles
+HAVING
+    l.ejemplares_disponibles <> COUNT(e.numero_ejemplar);
 
---EJEMPLAR: SIN CAMBIOS
---PRESTAMO: SIN CAMBIOS
---USUARIO: SIN CAMBIOS 
 
+-- ============================================================
+-- 2. CORRECCIONES APLICADAS
+-- ============================================================
 
---CORRECCIONES 
 BEGIN;
 
-CREATE VIEW libro_disponibles AS
-SELECT l.isbn, l.titulo, Count(e.numero_ejemplar) - Count(p.numero_ejemplar) AS ejemplares_disponibles
+
+-- 2.1. Crear una vista para calcular dinamicamente
+--      la cantidad de ejemplares disponibles por libro.
+
+CREATE VIEW ejemplares_disponibles AS
+SELECT
+    l.isbn,
+    l.titulo,
+    COUNT(e.numero_ejemplar) - COUNT(p.numero_ejemplar)
+        AS ejemplares_disponibles
 FROM libro l
-LEFT JOIN ejemplar e ON e.isbn_libro = l.isbn
-LEFT JOIN prestamo p ON p.isbn_libro = e.isbn_libro AND p.numero_ejemplar = e.numero_ejemplar AND p.fecha_devolucion IS NULL
-GROUP BY l.isbn, l.titulo;
+LEFT JOIN ejemplar e
+    ON e.isbn_libro = l.isbn
+LEFT JOIN prestamo p
+    ON p.isbn_libro = e.isbn_libro
+    AND p.numero_ejemplar = e.numero_ejemplar
+    AND p.fecha_devolucion IS NULL
+GROUP BY
+    l.isbn,
+    l.titulo;
 
---COMO LA COLUMNA ejemplares_disponibles tenia un error , no tiene sentido usar un exept para comparar lo anterior con lo actual
 
--- Prueba de la vista libro_disponibles
+-- 2.2. Verificar los resultados de la vista.
 
-SELECT * FROM libro_disponibles;
+SELECT *
+FROM ejemplares_disponibles;
 
-ALTER TABLE libro DROP COLUMN ejemplares_disponibles;
+
+-- 2.3. Eliminar la columna redundante de la tabla libro.
+--      Su valor ahora se obtiene mediante la vista.
+
+ALTER TABLE libro
+DROP COLUMN ejemplares_disponibles;
+
+
+-- ============================================================
+-- 3. FINALIZAR LA TRANSACCION
+-- ============================================================
+
 COMMIT;
+
+
+-- ============================================================
+-- FIN DE LA NORMALIZACION
+-- ============================================================

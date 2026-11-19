@@ -42,15 +42,17 @@ CREATE TABLE prestamo (
     CHECK               (fecha_limite >= fecha_inicio AND (fecha_devolucion IS NULL OR fecha_devolucion >= fecha_inicio)),
     FOREIGN KEY         (numero_ejemplar, isbn_libro)  REFERENCES ejemplar(numero_ejemplar, isbn_libro)
 
+    CREATE UNIQUE INDEX idx_ejemplar_prestamo_activo 
+    ON prestamo (numero_ejemplar, isbn_libro) 
+    WHERE fecha_devolucion IS NULL;
 );
-CREATE VIEW libro_disponibles AS
+
+CREATE VIEW ejemplares_disponibles AS
 SELECT l.isbn, l.titulo, Count(e.numero_ejemplar) - Count(p.numero_ejemplar) AS ejemplares_disponibles
 FROM libro l
 LEFT JOIN ejemplar e ON e.isbn_libro = l.isbn
 LEFT JOIN prestamo p ON p.isbn_libro = e.isbn_libro AND p.numero_ejemplar = e.numero_ejemplar AND p.fecha_devolucion IS NULL
 GROUP BY l.isbn, l.titulo;
 
-CREATE UNIQUE INDEX idx_ejemplar_prestamo_activo 
-ON prestamo (numero_ejemplar, isbn_libro) 
-WHERE fecha_devolucion IS NULL;
+
 
