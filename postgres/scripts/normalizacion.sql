@@ -69,18 +69,25 @@ SELECT
     COUNT(e.numero_ejemplar) - COUNT(p.numero_ejemplar)
         AS ejemplares_disponibles
 FROM libro l
-LEFT JOIN ejemplar e
-    ON e.isbn_libro = l.isbn
-LEFT JOIN prestamo p
-    ON p.isbn_libro = e.isbn_libro
+LEFT JOIN ejemplar e ON e.isbn_libro = l.isbn
+LEFT JOIN prestamo p ON p.isbn_libro = e.isbn_libro
     AND p.numero_ejemplar = e.numero_ejemplar
     AND p.fecha_devolucion IS NULL
-GROUP BY
-    l.isbn,
-    l.titulo;
+GROUP BY l.isbn, l.titulo
+ORDER BY ejemplares_disponibles, l.isbn;
 
 
--- 2.2. Verificar los resultados de la vista.
+-- 2.2. Verificar los resultados de la vista  con datos_prueba.sql.
+--     Se comparan los ejemplares disponibles obtenidos con los esperados.
+--
+--     ISBN             | Libro                      | Disponibles (Esperados)
+--     9781111111111    | Cien Anos de Soledad       | 1
+--     9782222222222    | 1984                       | 1
+--     9783333333333    | Fahrenheit 451             | 1
+--     9786666666666    | Rayuela                    | 1
+--     9787777777777    | Ficciones                  | 1
+--     9785555555555    | Don Quijote de la Mancha   | 2
+--     9784444444444    | El Hobbit                  | 3
 
 SELECT *
 FROM ejemplares_disponibles;
@@ -91,6 +98,12 @@ FROM ejemplares_disponibles;
 
 ALTER TABLE libro
 DROP COLUMN ejemplares_disponibles;
+
+--2.4. verificar que se mantiene el numero de registros con datos_prueba.sql
+--     resultado esperado : 7 registros
+
+SELECT COUNT(*) AS cantidad_libros
+FROM libro;
 
 
 -- ============================================================
