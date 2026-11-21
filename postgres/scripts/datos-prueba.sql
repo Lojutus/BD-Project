@@ -51,3 +51,12 @@ INSERT INTO prestamo (numero_ejemplar, isbn_libro, documento_usuario, fecha_inic
 
 (3, '9786666666666', '1000000006', CURRENT_DATE - 30, CURRENT_DATE - 15, NULL),
 (3, '9787777777777', '1000000006', CURRENT_DATE - 20, CURRENT_DATE - 5, NULL);
+
+-- recomputa la copia y en el Hito 4 lo hará un trigger
+UPDATE libro l
+SET    ejemplares_disponibles =
+         (SELECT count(*) FROM ejemplar  e WHERE e.isbn_libro = l.isbn)
+       - (SELECT count(*) FROM prestamo p
+          WHERE p.isbn_libro = l.isbn AND p.fecha_devolucion IS NULL);
+
+REFRESH MATERIALIZED VIEW top_prestados;
