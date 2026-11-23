@@ -87,4 +87,18 @@ GROUP BY l.isbn, l.titulo
 ORDER BY num_prestamos DESC
 FETCH FIRST 20 ROWS WITH TIES;
 
+CREATE MATERIALIZED VIEW top_lectores AS
+WITH leidos AS (
+    SELECT c.documento, c.nombres, c.apellidos, c.correo,
+           count(pr.id_prestamo) AS libros_leidos
+    FROM cuenta c
+    LEFT JOIN prestamo pr ON pr.documento_usuario = c.documento
+                          AND pr.fecha_devolucion IS NOT NULL
+    GROUP BY c.documento, c.nombres, c.apellidos
+)
+SELECT documento, nombres, apellidos, correo, libros_leidos
+FROM leidos
+WHERE libros_leidos = (SELECT max(libros_leidos) FROM leidos)
+ORDER BY apellidos, nombres;
+
 

@@ -60,3 +60,4 @@ SET    ejemplares_disponibles =
           WHERE p.isbn_libro = l.isbn AND p.fecha_devolucion IS NULL);
 
 REFRESH MATERIALIZED VIEW top_prestados;
+REFRESH MATERIALIZED VIEW top_lectores;
