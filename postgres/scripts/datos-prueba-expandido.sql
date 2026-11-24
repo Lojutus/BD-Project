@@ -139,3 +139,13 @@ SELECT e,
             ELSE NULL END
 FROM fechas
 ORDER BY n;
+
+-- recomputa la copia; en el Hito 4 lo hará un trigger
+UPDATE libro l
+SET    ejemplares_disponibles =
+         (SELECT count(*) FROM ejemplar  e WHERE e.isbn_libro = l.isbn)
+       - (SELECT count(*) FROM prestamo p
+          WHERE p.isbn_libro = l.isbn AND p.fecha_devolucion IS NULL);
+
+REFRESH MATERIALIZED VIEW top_prestados;
+REFRESH MATERIALIZED VIEW top_lectores;

@@ -15,7 +15,8 @@ CREATE TABLE libro (
     titulo                  varchar(200)  NOT NULL CHECK (titulo <> ''),
     autor                   varchar(120)  NOT NULL CHECK (autor <> ''),
     categoria               varchar(40)   NOT NULL CHECK (categoria <> ''),
-    anio_publicacion        smallint      NOT NULL CHECK (anio_publicacion BETWEEN 1000 AND 2100)
+    anio_publicacion        smallint      NOT NULL CHECK (anio_publicacion BETWEEN 1000 AND 2100),
+    ejemplares_disponibles  smallint      NOT NULL DEFAULT 0 CHECK (ejemplares_disponibles >= 0)
 );
 
 CREATE TABLE ejemplar(
@@ -64,5 +65,40 @@ LEFT JOIN prestamo p ON p.isbn_libro = e.isbn_libro
 GROUP BY l.isbn, l.titulo
 ORDER BY ejemplares_disponibles, l.isbn;
 
+-- copia deliberada de un dato derivado (ver documento de normalización, sección 5)
+-- si devuelve filas, la copia se desincronizó del cálculo real
+CREATE VIEW descuadre AS
+SELECT l.isbn, l.titulo,
+       l.ejemplares_disponibles AS guardado,
+         (SELECT count(*) FROM ejemplar  e WHERE e.isbn_libro = l.isbn)
+       - (SELECT count(*) FROM prestamo p
+          WHERE p.isbn_libro = l.isbn AND p.fecha_devolucion IS NULL) AS calculado
+FROM   libro l
+WHERE  l.ejemplares_disponibles <>
+         (SELECT count(*) FROM ejemplar  e WHERE e.isbn_libro = l.isbn)
+       - (SELECT count(*) FROM prestamo p
+          WHERE p.isbn_libro = l.isbn AND p.fecha_devolucion IS NULL);
+
+CREATE MATERIALIZED VIEW top_prestados AS
+SELECT l.isbn, l.titulo, count(pr.id_prestamo) AS num_prestamos
+FROM   libro l
+LEFT JOIN prestamo pr ON pr.isbn_libro = l.isbn
+GROUP BY l.isbn, l.titulo
+ORDER BY num_prestamos DESC
+FETCH FIRST 20 ROWS WITH TIES;
+
+CREATE MATERIALIZED VIEW top_lectores AS
+WITH leidos AS (
+    SELECT c.documento, c.nombres, c.apellidos, c.correo,
+           count(pr.id_prestamo) AS libros_leidos
+    FROM cuenta c
+    LEFT JOIN prestamo pr ON pr.documento_usuario = c.documento
+                          AND pr.fecha_devolucion IS NOT NULL
+    GROUP BY c.documento, c.nombres, c.apellidos
+)
+SELECT documento, nombres, apellidos, correo, libros_leidos
+FROM leidos
+WHERE libros_leidos = (SELECT max(libros_leidos) FROM leidos)
+ORDER BY apellidos, nombres;
 
 
