@@ -26,7 +26,7 @@ docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/datos-
 Antes de hacer una carga, se debe correr esquema_cargas.sql:
 
 ```bash
-docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/esquema_cargas.sql
+docker compose exec postgres psql -U biblioteca -d biblioteca -f /scripts/esquema-cargas.sql
 ```
 
 

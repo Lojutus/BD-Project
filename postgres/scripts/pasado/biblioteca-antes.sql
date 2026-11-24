@@ -1,3 +1,5 @@
+-- SOLO PARA PRUEBAS DE MIGRACIÓN. Correr únicamente en una base aparte
+-- (ver README.md de esta carpeta). Hace DROP SCHEMA: nunca en 'biblioteca'.
 DROP SCHEMA IF EXISTS Biblioteca CASCADE;
 CREATE SCHEMA Biblioteca;
 SET search_path TO Biblioteca;
