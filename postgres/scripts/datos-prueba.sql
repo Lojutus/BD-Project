@@ -1,6 +1,14 @@
 SET search_path TO Biblioteca;
 
--- 1. Insert Cuentas 
+BEGIN;
+
+-- Desactiva temporalmente los triggers de usuario para permitir la carga
+-- histórica (incluyendo préstamos ya vencidos como los de Elena) y evitar
+-- recálculos fila por fila durante la carga masiva.
+ALTER TABLE ejemplar DISABLE TRIGGER USER;
+ALTER TABLE prestamo DISABLE TRIGGER USER;
+
+-- 1. Insert Cuentas
 INSERT INTO cuenta (documento, nombres, apellidos, correo, telefono) VALUES
 ('1000000001', 'Juan', 'Perez', 'juan@test.com', '3001111111'),
 ('1000000002', 'Maria', 'Gomez', 'maria@test.com', '3002222222'),
@@ -30,7 +38,7 @@ INSERT INTO ejemplar (numero_ejemplar, isbn_libro, estado_ejemplar) VALUES
 (1, '9786666666666', 10), (2, '9786666666666', 10), (3, '9786666666666', 10), (4, '9786666666666', 10),
 (1, '9787777777777', 10), (2, '9787777777777', 10), (3, '9787777777777', 10), (4, '9787777777777', 10);
 
--- 4. Insert Prestamos 
+-- 4. Insert Prestamos
 INSERT INTO prestamo (numero_ejemplar, isbn_libro, documento_usuario, fecha_inicio, fecha_limite, fecha_devolucion) VALUES
 (1, '9782222222222', '1000000001', CURRENT_DATE - 40, CURRENT_DATE - 30, CURRENT_DATE - 28),
 (1, '9784444444444', '1000000001', CURRENT_DATE - 30, CURRENT_DATE - 20, CURRENT_DATE - 18),
@@ -52,12 +60,19 @@ INSERT INTO prestamo (numero_ejemplar, isbn_libro, documento_usuario, fecha_inic
 (3, '9786666666666', '1000000006', CURRENT_DATE - 30, CURRENT_DATE - 15, NULL),
 (3, '9787777777777', '1000000006', CURRENT_DATE - 20, CURRENT_DATE - 5, NULL);
 
--- recomputa la copia y en el Hito 4 lo hará un trigger
+-- Reactiva los triggers de usuario para que operen en adelante
+ALTER TABLE ejemplar ENABLE TRIGGER USER;
+ALTER TABLE prestamo ENABLE TRIGGER USER;
+
+-- Recalcula el dato derivado libro.ejemplares_disponibles una sola vez
+-- tras la carga masiva; a partir de aqui lo mantienen los triggers.
 UPDATE libro l
 SET    ejemplares_disponibles =
-         (SELECT count(*) FROM ejemplar  e WHERE e.isbn_libro = l.isbn)
+         (SELECT count(*) FROM ejemplar e WHERE e.isbn_libro = l.isbn)
        - (SELECT count(*) FROM prestamo p
           WHERE p.isbn_libro = l.isbn AND p.fecha_devolucion IS NULL);
+
+COMMIT;
 
 REFRESH MATERIALIZED VIEW top_prestados;
 REFRESH MATERIALIZED VIEW top_lectores;

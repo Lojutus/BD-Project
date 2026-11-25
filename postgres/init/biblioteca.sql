@@ -50,21 +50,6 @@ CREATE UNIQUE INDEX idx_ejemplar_prestamo_activo
 ON prestamo (numero_ejemplar, isbn_libro) 
 WHERE fecha_devolucion IS NULL;
 
-
-CREATE VIEW ejemplares_disponibles AS
-SELECT
-    l.isbn,
-    l.titulo,
-    COUNT(e.numero_ejemplar) - COUNT(p.numero_ejemplar)
-        AS ejemplares_disponibles
-FROM libro l
-LEFT JOIN ejemplar e ON e.isbn_libro = l.isbn
-LEFT JOIN prestamo p ON p.isbn_libro = e.isbn_libro
-    AND p.numero_ejemplar = e.numero_ejemplar
-    AND p.fecha_devolucion IS NULL
-GROUP BY l.isbn, l.titulo
-ORDER BY ejemplares_disponibles, l.isbn;
-
 -- copia deliberada de un dato derivado (ver documento de normalización, sección 5)
 -- si devuelve filas, la copia se desincronizó del cálculo real
 CREATE VIEW descuadre AS
