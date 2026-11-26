@@ -47,9 +47,13 @@ LANGUAGE sql
 STABLE
 SET search_path = Biblioteca
 AS $$
-    -- TODO (José): retornar EXISTS (...) sobre prestamo verificando
-    -- documento_usuario = p_documento, fecha_devolucion IS NULL y
-    -- fecha_limite < CURRENT_DATE.
+    SELECT EXISTS (
+        SELECT 1
+        FROM prestamo
+        WHERE documento_usuario = p_documento
+          AND fecha_devolucion IS NULL
+          AND fecha_limite < CURRENT_DATE
+    );
 $$;
 
 -- ----------------------------------------------------------------------------
@@ -62,6 +66,10 @@ LANGUAGE sql
 STABLE
 SET search_path = Biblioteca
 AS $$
+        SELECT COUNT(*)
+        FROM prestamo
+        WHERE documento_usuario = p_documento
+          AND fecha_devolucion IS NULL;
     -- TODO (José): retornar COUNT(*) de prestamo donde
     -- documento_usuario = p_documento y fecha_devolucion IS NULL.
 $$;
@@ -78,6 +86,17 @@ LANGUAGE sql
 STABLE
 SET search_path = Biblioteca
 AS $$
+    SELECT e.numero_ejemplar
+    FROM ejemplar e
+    WHERE e.isbn_libro = p_isbn
+        AND NOT EXISTS (
+                SELECT 1
+                FROM prestamo p
+                WHERE p.isbn_libro = e.isbn_libro
+                AND p.numero_ejemplar = e.numero_ejemplar
+                AND p.fecha_devolucion IS NULL
+            ) LIMIT 1;
+            
     -- TODO (José): seleccionar e.numero_ejemplar FROM ejemplar e
     -- donde e.isbn_libro = p_isbn y NOT EXISTS un préstamo abierto
     -- para (e.numero_ejemplar, e.isbn_libro), ordenado por e.numero_ejemplar ASC
