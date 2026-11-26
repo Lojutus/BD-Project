@@ -132,8 +132,30 @@ DECLARE
     v_ejemplar    smallint;
     v_id_prestamo integer;
 BEGIN
-    -- TODO (José): implementar las 4 validaciones, el INSERT ... RETURNING id_prestamo
-    -- y el RAISE NOTICE informativo.
+    --1. La cuenta p_documento debe existir en la tabla cuenta.
+    IF NOT EXISTS (SELECT 1 FROM cuenta WHERE documento = p_documento) THEN
+        RAISE EXCEPTION 'La cuenta con documento % no existe.', p_documento;
+    END IF;
+    --2. El libro p_isbn debe existir en la tabla libro.
+    IF NOT EXISTS (SELECT 1 FROM libro WHERE isbn = p_isbn) THEN
+        RAISE EXCEPTION 'El libro con ISBN % no existe.', p_isbn;
+    END IF;
+    --3. La cuenta no debe estar en mora 
+    IF en_mora(p_documento) THEN
+        RAISE EXCEPTION 'La cuenta con documento % está en mora.', p_documento;
+    END IF;
+    --4. Debe existir un ejemplar libre
+    v_ejemplar := ejemplar_disponible(p_isbn);
+    IF v_ejemplar IS NULL THEN
+        RAISE EXCEPTION 'No hay ejemplares disponibles para el libro con ISBN %.', p_isbn;
+    END IF;
+    --5. Insertar el préstamo y recuperar el id_prestamo generado
+    INSERT INTO prestamo (documento_usuario, isbn_libro, numero_ejemplar, fecha_inicio, fecha_limite)
+    VALUES (p_documento, p_isbn, v_ejemplar, CURRENT_DATE, CURRENT_DATE + 14) -- Fecha limite deberia de tener presente que son dias Habiles, pero por simplicidad se usa CURRENT_DATE + 14
+    RETURNING id_prestamo INTO v_id_prestamo;
+    --6. Mostrar un mensaje informativo
+    RAISE NOTICE 'Préstamo registrado: id_prestamo = %, isbn = %, ejemplar = %', v_id_prestamo, p_isbn, v_ejemplar;
+    
 END;
 $$;
 
