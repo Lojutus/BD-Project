@@ -209,8 +209,15 @@ LANGUAGE plpgsql
 SET search_path = Biblioteca
 AS $$
 BEGIN
-    -- TODO (Carlos): completar fechas por defecto y bloquear INSERT abierto
-    -- cuando en_mora(NEW.documento_usuario) sea TRUE. Retornar NEW.
+    -- Rellena fechas por defecto y bloquea préstamos abiertos de cuentas en mora.    
+    NEW.fecha_inicio := COALESCE(NEW.fecha_inicio, CURRENT_DATE);
+    NEW.fecha_limite := COALESCE(NEW.fecha_limite, NEW.fecha_inicio + 14);
+    IF NEW.fecha_devolucion IS NULL THEN
+        IF en_mora(NEW.documento_usuario) THEN
+         RAISE EXCEPTION 'La cuenta con documento % está en mora.', NEW.documento_usuario;
+        END IF;
+    END IF;
+
     RETURN NEW;
 END;
 $$;
@@ -239,10 +246,25 @@ RETURNS trigger
 LANGUAGE plpgsql
 SET search_path = Biblioteca
 AS $$
+DECLARE
+    v_isbn_nuevo varchar(13) := NULL;
+    v_isbn_viejo varchar(13) := NULL;
 BEGIN
-    -- TODO (Carlos): recalcular libro.ejemplares_disponibles para NEW.isbn_libro
-    -- (en INSERT/UPDATE) y para OLD.isbn_libro (en DELETE, o en UPDATE si
-    -- OLD.isbn_libro IS DISTINCT FROM NEW.isbn_libro). Retornar NULL.
+    -- Recalcula ejemplares_disponibles para el/los libros afectados.
+    IF TG_OP IN ('INSERT', 'UPDATE') THEN
+        v_isbn_nuevo := NEW.isbn_libro;
+    END IF;
+    IF TG_OP IN ('DELETE', 'UPDATE') THEN
+     v_isbn_viejo := OLD.isbn_libro;
+    END IF;
+    UPDATE libro l
+    SET    ejemplares_disponibles =
+           (SELECT count(*) FROM ejemplar e
+            WHERE  e.isbn_libro = l.isbn)
+         - (SELECT count(*) FROM prestamo p
+            WHERE  p.isbn_libro = l.isbn
+              AND  p.fecha_devolucion IS NULL)
+WHERE  l.isbn IN (v_isbn_nuevo, v_isbn_viejo);
     RETURN NULL;
 END;
 $$;
